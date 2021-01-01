@@ -1,10 +1,11 @@
 require("./config");
 
 const express = require("express");
+const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const userRoutes = require("./routes/user");
 
 const app = express();
-const PORT = 3000;
 
 // Parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -12,37 +13,26 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Parse application/json
 app.use(bodyParser.json());
 
-// Routes
-app.get("/usuario", (req, res) => {
-  res.json("get usuario");
-});
+// Server routes
+app.use(userRoutes);
 
-app.post("/usuario", (req, res) => {
-  let body = req.body;
+// MongoDB connection
+const connectionOptions = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+  useFindAndModify: false
+};
 
-  if (!body.nombre) {
-    res.status(400).json({
-      ok: false,
-      message: "El nombre es necesario"
-    });
+mongoose.connect(process.env.DB_URI, connectionOptions, err => {
+  if (err) {
+    console.log(err);
   } else {
-    res.json({
-      usuario: body
-    });
+    console.log("Conexión establecida con la base de datos.");
   }
 });
 
-app.put("/usuario/:id", (req, res) => {
-  let id = req.params.id;
-  res.json({
-    id
-  });
-});
-
-app.delete("/usuario", (req, res) => {
-  res.json("delete usuario");
-});
-
+// Server listen
 app.listen(process.env.PORT, () => {
   console.log(`Escuchando el puerto ${process.env.PORT}`);
 });
