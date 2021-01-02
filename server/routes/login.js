@@ -29,7 +29,7 @@ app.post("/login", (req, res) => {
       let tokenPayload = {
         user: foundUser
       };
-      let tokenSecret = "this-is-the-development-seed";
+      let tokenSecret = process.env.TOKEN_SEED;
       let tokenOptions = {
         expiresIn: "30d"
       };
