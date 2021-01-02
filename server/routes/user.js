@@ -2,10 +2,12 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const _ = require("underscore");
 const User = require("../models/User");
+const { verifyToken, verifyAdminRole } = require("../middlewares/auth");
 
 const app = express();
 
-app.get("/user", (req, res) => {
+// Get users
+app.get("/user", [verifyToken, verifyAdminRole], (req, res) => {
   let skip = parseInt(req.query.skip) || 0;
   let limit = parseInt(req.query.limit) || 5;
   let filterObject = {
@@ -35,7 +37,8 @@ app.get("/user", (req, res) => {
     });
 });
 
-app.post("/user", (req, res) => {
+// Create new user
+app.post("/user", [verifyToken, verifyAdminRole], (req, res) => {
   let { name, email, password, img, role } = req.body;
 
   let user = new User({
@@ -62,7 +65,8 @@ app.post("/user", (req, res) => {
   });
 });
 
-app.put("/user/:id", (req, res) => {
+// Update user information
+app.put("/user/:id", verifyToken, (req, res) => {
   let id = req.params.id;
   let body = _.pick(req.body, ["nombre", "email", "img", "role", "estado"]);
 
@@ -89,10 +93,11 @@ app.put("/user/:id", (req, res) => {
   );
 });
 
-app.delete("/user/:id", (req, res) => {
+// Update user status
+app.delete("/user/:id", [verifyToken, verifyAdminRole], (req, res) => {
   let { id } = req.params;
 
-  // OPCION 1: Eliminar registro
+  // OPTION 1: Delete register
   // User.findByIdAndRemove(id, (err, deletedUser) => {
   //   if (err) {
   //     return res.status(400).json({
@@ -112,7 +117,7 @@ app.delete("/user/:id", (req, res) => {
   //   }
   // });
 
-  // OPCION 2: Marcar usuario como eliminado, mantener registro
+  // OPTION 2: Mark user as deleted, keep register
   User.findByIdAndUpdate(
     id,
     {

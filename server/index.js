@@ -3,7 +3,7 @@ require("./config");
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-const userRoutes = require("./routes/user");
+const routes = require("./routes");
 
 const app = express();
 
@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // Server routes
-app.use(userRoutes);
+app.use(routes);
 
 // MongoDB connection
 const connectionOptions = {
