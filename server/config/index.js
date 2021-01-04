@@ -16,3 +16,8 @@ process.env.TOKEN_EXP = "30d";
 // _Authentication seed
 process.env.TOKEN_SEED =
   process.env.TOKEN_SEED || "this-is-the-development-seed";
+
+// Google Client ID
+process.env.CLIENT_ID =
+  process.env.CLIENT_ID ||
+  "689895633458-nbum94hier1i3hotrc88hmqdrllm9k1g.apps.googleusercontent.com";
